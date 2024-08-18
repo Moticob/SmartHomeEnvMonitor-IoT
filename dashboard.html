@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Environmental Monitoring Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #data { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Environmental Monitoring Dashboard</h1>
+    <div id="data">
+        <p>Loading data...</p>
+    </div>
+
+    <script>
+        const apiKey = "Your_API_KEY";
+        const url = `http://api.thingspeak.com/channels/YOUR_CHANNEL_ID/feeds.json?api_key=${apiKey}&results=1`;
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+            const lastEntry = data.feeds[0];
+
+            document.getElementById('data').innerHTML = `
+                <p>Temperature: ${lastEntry.field1} °C</p>
+                <p>Humidity: ${lastEntry.field2} %</p>
+                <p>Air Quality: ${lastEntry.field3} PPM</p>
+                <p>Light Level: ${lastEntry.field4}</p>
+                <p>Motion Detected: ${lastEntry.field5 == 1 ? "Yes" : "No"}</p>
+            `;
+        }
+
+        fetchData();
+        setInterval(fetchData, 5000); // Refresh data every 5 seconds
+    </script>
+</body>
+</html>
